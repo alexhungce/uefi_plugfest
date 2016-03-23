@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 shopt -s -o nounset
 
-if ! ping www.google.com -c 1  ; then
+if ! ping www.google.com -c 1 > /dev/null ; then
 	echo "Please connect to Internet"
 	exit 1
 fi

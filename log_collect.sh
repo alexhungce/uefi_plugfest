@@ -42,3 +42,8 @@ sudo lspci -vvnn > lspci_vvnn.log
 sudo lspci -xxx > lspci_xxx.log
 
 
+echo ""
+echo "running fwts tests..."
+sudo fwts --acpitests
+sudo fwts --uefitests
+sudo fwts

@@ -17,6 +17,13 @@ if ! ping www.google.com -c 1  ; then
 	exit 1
 fi
 
+echo ""
+echo "installing acpidump, iasl and fwts..."
+
+sudo add-apt-repository ppa:firmware-testing-team/ppa-fwts-stable
+sudo apt-get update
+sudo apt-get install acpidump iasl fwts -y
+
 DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4; }') 
 mkdir $DATE
 cd $DATE
@@ -25,7 +32,9 @@ VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
 mkdir $VENDOR
 cd $VENDOR
 
-sudo apt-get install acpidump iasl
+echo ""
+echo "collecting logs..."
+
 sudo dmesg > dmesg.log
 sudo acpidump > acpi.log
 sudo dmidecode > dmi.log

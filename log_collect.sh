@@ -20,7 +20,7 @@ fi
 echo ""
 echo "installing acpidump, iasl and fwts..."
 
-sudo add-apt-repository ppa:firmware-testing-team/ppa-fwts-stable
+sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
 sudo apt-get update
 sudo apt-get install acpidump iasl fwts -y
 

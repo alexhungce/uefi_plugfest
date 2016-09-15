@@ -32,6 +32,10 @@ VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
 mkdir $VENDOR
 cd $VENDOR
 
+PRODUCT=$(sudo dmidecode --string system-product-name | awk -F ' ' '{ printf $1; }')
+mkdir $PRODUCT
+cd $PRODUCT
+
 echo ""
 echo "collecting logs..."
 

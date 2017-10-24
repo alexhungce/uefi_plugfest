@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 shopt -s -o nounset
 
-RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests --log-level=medium"
+RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
 
 if ! ping www.google.com -c 1 > /dev/null ; then
 	echo "Please connect to Internet"

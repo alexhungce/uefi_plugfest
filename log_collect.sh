@@ -26,7 +26,7 @@ sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
 sudo apt-get update
 sudo apt-get install acpidump iasl fwts -y
 
-DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4; }') 
+DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4 $6; }') 
 mkdir $DATE
 cd $DATE
 

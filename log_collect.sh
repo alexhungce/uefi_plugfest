@@ -13,18 +13,21 @@
 shopt -s -o nounset
 
 RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
+UPDATE_FWTS=true
 
-if ! ping www.google.com -c 1 > /dev/null ; then
-	echo "Please connect to Internet"
-	exit 1
+if [ $UPDATE_FWTS = true ] ; then
+	if ! ping www.google.com -c 1 > /dev/null ; then
+		echo "Please connect to Internet"
+		exit 1
+	fi
+
+	echo ""
+	echo "installing acpidump, iasl and fwts..."
+
+	sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
+	sudo apt-get update
+	sudo apt-get install acpidump iasl fwts -y
 fi
-
-echo ""
-echo "installing acpidump, iasl and fwts..."
-
-sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
-sudo apt-get update
-sudo apt-get install acpidump iasl fwts -y
 
 DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4 $6; }') 
 mkdir $DATE
@@ -46,7 +49,6 @@ sudo acpidump > acpi.log
 sudo dmidecode > dmi.log
 sudo lspci -vvnn > lspci_vvnn.log
 sudo lspci -xxx > lspci_xxx.log
-
 
 echo ""
 echo "running fwts tests..."

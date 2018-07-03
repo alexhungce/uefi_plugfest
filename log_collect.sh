@@ -13,7 +13,7 @@
 shopt -s -o nounset
 
 RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
-UPDATE_FWTS=true
+UPDATE_FWTS=false
 
 if [ $UPDATE_FWTS = true ] ; then
 	if ! ping www.google.com -c 1 > /dev/null ; then

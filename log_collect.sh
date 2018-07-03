@@ -10,7 +10,6 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-shopt -s -o nounset
 
 RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
 UPDATE_FWTS=false
@@ -29,7 +28,15 @@ if [ $UPDATE_FWTS = true ] ; then
 	sudo apt-get install acpidump iasl fwts -y
 fi
 
-DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4 $6; }') 
+# create a topmost folder by date
+if ! [ -z "$1" ]; then
+	DATE=$1
+elif ping www.google.com -c 1 > /dev/null ; then
+	DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4; }')
+else
+	echo "Please specify a date (ex. 01Jul) or connect to Internet"
+	exit 1
+fi
 mkdir $DATE
 cd $DATE
 

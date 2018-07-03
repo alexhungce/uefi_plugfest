@@ -37,14 +37,18 @@ else
 	echo "Please specify a date (ex. 01Jul) or connect to Internet"
 	exit 1
 fi
-mkdir $DATE
+[ -d $DATE ] || mkdir $DATE
 cd $DATE
 
 VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
-mkdir $VENDOR
+[ -d $VENDOR ] || mkdir $VENDOR
 cd $VENDOR
 
 PRODUCT=$(sudo dmidecode --string system-product-name | awk -F ' ' '{ printf $1; }')
+if [ -d $PRODUCT ] ; then
+	echo "$PRODUCT exists! Exiting..."
+	exit 1
+fi
 mkdir $PRODUCT
 cd $PRODUCT
 

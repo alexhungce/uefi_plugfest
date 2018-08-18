@@ -34,8 +34,8 @@ if ! [ -z "$1" ]; then
 elif ping www.google.com -c 1 > /dev/null ; then
 	DATE=$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | awk -F ' ' '{ printf $3 $4; }')
 else
-	echo "Please specify a date (ex. 01Jul) or connect to Internet"
-	exit 1
+	echo "Please specify a date (ex. 01Jul):"
+	read DATE
 fi
 [ -d $DATE ] || mkdir $DATE
 cd $DATE

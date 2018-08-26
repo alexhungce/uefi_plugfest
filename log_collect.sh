@@ -12,7 +12,10 @@
 # GNU General Public License for more details.
 
 RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
+RECOMMEND_TESTS_IFV="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests --ifv"
 UPDATE_FWTS=false
+
+readonly IFV_LIST=( AMI American Byosoft INSYDE Intel Phoenix )
 
 if [ $UPDATE_FWTS = true ] ; then
 	if ! ping www.google.com -c 1 > /dev/null ; then
@@ -63,4 +66,11 @@ sudo lspci -xxx > lspci_xxx.log
 
 echo ""
 echo "running fwts tests..."
+
+VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
+for i in "${IFV_LIST[@]}"
+do
+        [ "$VENDOR" = "$i" ] && RECOMMEND_TESTS="$RECOMMEND_TESTS_IFV"
+done
+
 sudo fwts $RECOMMEND_TESTS

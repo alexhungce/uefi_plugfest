@@ -15,7 +15,7 @@ RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge
 RECOMMEND_TESTS_IFV="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests --ifv"
 UPDATE_FWTS=false
 
-readonly IFV_LIST=( AMI American Byosoft INSYDE Intel Phoenix )
+readonly IFV_LIST=( American Byosoft INSYDE Intel Phoenix )
 
 if [ $UPDATE_FWTS = true ] ; then
 	if ! ping www.google.com -c 1 > /dev/null ; then

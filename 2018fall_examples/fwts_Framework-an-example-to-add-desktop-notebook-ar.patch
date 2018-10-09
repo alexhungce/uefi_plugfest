@@ -1,0 +1,101 @@
+From 80855e414b731aed7184034493eba2768cce9cc2 Mon Sep 17 00:00:00 2001
+From: Alex Hung <alex.hung@canonical.com>
+Date: Tue, 2 Oct 2018 09:58:41 +0800
+Subject: [PATCH] fwts_Framework: an example to add desktop & notebook args
+
+This is based on FWTS 18.09.00
+
+This example demonstrates how to add flags and to customise exisiting
+tests based on different cases.
+
+Signed-off-by: Alex Hung <alex.hung@canonical.com>
+---
+ src/acpi/fadt/fadt.c             | 8 ++++++++
+ src/dmi/dmicheck/dmicheck.c      | 8 ++++++++
+ src/lib/include/fwts_framework.h | 4 +++-
+ src/lib/src/fwts_framework.c     | 9 +++++++++
+ 4 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/src/acpi/fadt/fadt.c b/src/acpi/fadt/fadt.c
+index 12c88f78..49bad62d 100644
+--- a/src/acpi/fadt/fadt.c
++++ b/src/acpi/fadt/fadt.c
+@@ -425,6 +425,14 @@ static void acpi_table_check_fadt_pm_profile(fwts_framework *fw)
+ 	else
+ 		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPMProfile",
+ 			    "FADT preferred PM profile is invalid.");
++
++	if (fw->flags & FWTS_FLAG_TEST_DESKTOP && fadt->preferred_pm_profile != 1)
++		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPMProfile",
++			    "FADT preferred PM profile is not desktop.");
++
++	if (fw->flags & FWTS_FLAG_TEST_NOTEBOOK && fadt->preferred_pm_profile != 2)
++		fwts_failed(fw, LOG_LEVEL_MEDIUM, "FADTPMProfile",
++			    "FADT preferred PM profile is not mobile.");
+ }
+ 
+ static void acpi_table_check_fadt_reduced_hardware(fwts_framework *fw)
+diff --git a/src/dmi/dmicheck/dmicheck.c b/src/dmi/dmicheck/dmicheck.c
+index d0096bd4..9737ba3b 100644
+--- a/src/dmi/dmicheck/dmicheck.c
++++ b/src/dmi/dmicheck/dmicheck.c
+@@ -1196,6 +1196,14 @@ static void dmicheck_entry(fwts_framework *fw,
+ 				break;
+ 			}
+ 
++			if (fw->flags & FWTS_FLAG_TEST_DESKTOP && (data[5] & ~0x80) != 0x03)
++				fwts_failed(fw, LOG_LEVEL_MEDIUM, "DMIBadChassisType",
++					    "Chassis type is not desktop.");
++
++			if (fw->flags & FWTS_FLAG_TEST_NOTEBOOK && (data[5] & ~0x80) != 0x0a)
++				fwts_failed(fw, LOG_LEVEL_MEDIUM, "DMIBadChassisType",
++					    "Chassis type is not mobile.");
++
+ 			dmi_min_max_mask_uint8_check(fw, table, addr, "Chassis Lock", hdr, 0x5, 0x0, 0x1, 0x7, 0x1);
+ 			dmi_str_check(fw, table, addr, "Version", hdr, 0x6);
+ 			dmi_str_check(fw, table, addr, "Serial Number", hdr, 0x7);
+diff --git a/src/lib/include/fwts_framework.h b/src/lib/include/fwts_framework.h
+index 6c53b233..0841c41a 100644
+--- a/src/lib/include/fwts_framework.h
++++ b/src/lib/include/fwts_framework.h
+@@ -61,7 +61,9 @@ typedef enum {
+ 	FWTS_FLAG_SHOW_TESTS_FULL		= 0x00200000,
+ 	FWTS_FLAG_SHOW_TESTS_CATEGORIES		= 0x00400000,
+ 	FWTS_FLAG_TEST_COMPLIANCE_ACPI		= 0x00800000,
+-	FWTS_FLAG_TEST_SBBR			= 0x01000000
++	FWTS_FLAG_TEST_SBBR			= 0x01000000,
++	FWTS_FLAG_TEST_DESKTOP			= 0x02000000,
++	FWTS_FLAG_TEST_NOTEBOOK			= 0x04000000
+ } fwts_framework_flags;
+ 
+ #define FWTS_FLAG_TEST_MASK		\
+diff --git a/src/lib/src/fwts_framework.c b/src/lib/src/fwts_framework.c
+index bedc1ee9..b0c61c6e 100644
+--- a/src/lib/src/fwts_framework.c
++++ b/src/lib/src/fwts_framework.c
+@@ -136,6 +136,8 @@ static fwts_option fwts_framework_options[] = {
+ 	{ "sbbr",		"",   0, "Run ARM SBBR tests." },
+ 	{ "ifv",		"",   0, "Run tests in firmware-vendor modes." },
+ 	{ "clog",		"",   1, "Specify a coreboot logfile dump" },
++	{ "desktop",		"",   0, "Run tests as desktop systems." },
++	{ "notebook",		"",   0, "Run tests as mobile systems." },
+ 	{ NULL, NULL, 0, NULL }
+ };
+ 
+@@ -1338,6 +1340,13 @@ int fwts_framework_options_handler(fwts_framework *fw, int argc, char * const ar
+ 			break;
+ 		case 48: /* --coreboot-log */
+ 			fwts_framework_strdup(&fw->clog, optarg);
++			break;
++		case 49: /* --desktop */
++			fw->flags |= FWTS_FLAG_TEST_DESKTOP;
++			break;
++		case 50: /* --notebook */
++			fw->flags |= FWTS_FLAG_TEST_NOTEBOOK;
++			break;
+ 
+ 		}
+ 		break;
+-- 
+2.17.1
+

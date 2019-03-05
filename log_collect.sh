@@ -26,9 +26,11 @@ if [ $UPDATE_FWTS = true ] ; then
 	echo ""
 	echo "installing acpidump, iasl and fwts..."
 
-	sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
-	sudo apt-get update
-	sudo apt-get install acpidump iasl fwts -y
+	if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
+		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
+		sudo apt-get update
+		sudo apt-get install acpidump iasl fwts -y
+	fi
 fi
 
 # create a topmost folder by date

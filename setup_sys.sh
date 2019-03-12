@@ -12,6 +12,11 @@
 # GNU General Public License for more details.
 shopt -s -o nounset
 
+if ! ping www.google.com -c 1 &> /dev/null ; then
+	echo "Please connect to Internet"
+	exit 1
+fi
+
 sudo apt update && sudo apt -y upgrade
 
 sudo apt install -y acpica-tools vim git git-email gitk openssh-server tree \

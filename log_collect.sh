@@ -13,24 +13,21 @@
 
 RECOMMEND_TESTS="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests"
 RECOMMEND_TESTS_IFV="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apicedge klog oops esrt --uefitests --acpitests --ifv"
-UPDATE_FWTS=false
 
 readonly IFV_LIST=( American Byosoft INSYDE Intel Phoenix )
 
-if [ $UPDATE_FWTS = true ] ; then
-	if ! ping www.google.com -c 1 > /dev/null ; then
-		echo "Please connect to Internet"
-		exit 1
-	fi
+if ! ping www.google.com -c 1 > /dev/null ; then
+	echo "Please connect to Internet"
+	exit 1
+fi
 
-	echo ""
-	echo "installing acpidump, iasl and fwts..."
+echo ""
+echo "installing acpidump, iasl and fwts..."
 
-	if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
-		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
-		sudo apt-get update
-		sudo apt-get install acpidump iasl fwts -y
-	fi
+if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
+	sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
+	sudo apt-get update
+	sudo apt-get install acpidump iasl fwts -y
 fi
 
 # create a topmost folder by date

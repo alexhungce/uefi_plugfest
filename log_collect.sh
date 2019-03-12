@@ -16,17 +16,13 @@ RECOMMEND_TESTS_IFV="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apic
 
 readonly IFV_LIST=( American Byosoft INSYDE Intel Phoenix )
 
-if ! ping www.google.com -c 1 > /dev/null ; then
-	echo "Please connect to Internet"
-	exit 1
-fi
-
-echo ""
-echo "installing acpidump, iasl and fwts..."
-
-if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
-	sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
-	sudo apt-get update
+if ping www.google.com -c 1 &> /dev/null ; then
+	echo ""
+	echo "installing acpidump, iasl and fwts..."
+	if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
+		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
+		sudo apt-get update
+	fi
 	sudo apt-get install acpidump iasl fwts -y
 fi
 

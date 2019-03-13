@@ -27,7 +27,7 @@ sudo rm /var/crash/*
 sudo sed -i -e s/^enabled\=1$/enabled\=0/ /etc/default/apport
 
 # setup for tilix
-if which tilix > /dev/null ; then
+if which tilix &> /dev/null ; then
 	sudo ln -s /etc/profile.d/vte-2.91.sh /etc/profile.d/vte.sh
 	wget -qO $HOME"/.config/tilix/schemes/argonaut.json" https://git.io/v7QV5
 fi

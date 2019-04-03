@@ -20,7 +20,7 @@ fi
 sudo apt update && sudo apt -y upgrade
 
 sudo apt install -y acpica-tools vim git git-email gitk openssh-server tree \
-		    meld ibus-chewing unp p7zip-full pastebinit tilix
+		    meld unp p7zip-full pastebinit tilix
 
 # disable crash report / apport
 sudo rm /var/crash/*

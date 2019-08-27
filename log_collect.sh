@@ -23,7 +23,7 @@ if ping www.google.com -c 1 &> /dev/null ; then
 		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
 		sudo apt-get update
 	fi
-	sudo apt-get install acpidump iasl fwts -y
+	sudo apt -y install acpica-tools fwts
 fi
 
 # create a topmost folder by date

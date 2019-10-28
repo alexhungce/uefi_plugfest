@@ -21,7 +21,6 @@ if ping www.google.com -c 1 &> /dev/null ; then
 	echo "installing acpidump, iasl and fwts..."
 	if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
 		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
-		sudo apt-get update
 	fi
 	sudo apt -y install acpica-tools fwts
 fi

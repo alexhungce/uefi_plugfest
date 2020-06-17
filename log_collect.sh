@@ -16,13 +16,16 @@ RECOMMEND_TESTS_IFV="version cpufreq maxfreq msr mtrr nx virt aspm dmicheck apic
 
 readonly IFV_LIST=( American Byosoft INSYDE Intel Phoenix )
 
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+[[ $UID == 0 ]] || exec sudo -- "$BASH" -- "$SELF" "$@"
+
 if ping www.google.com -c 1 &> /dev/null ; then
 	echo ""
 	echo "installing acpidump, iasl and fwts..."
 	if ! grep -q ppa-fwts-stable /etc/apt/sources.list /etc/apt/sources.list.d/* ; then
-		sudo add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
+		add-apt-repository -y ppa:firmware-testing-team/ppa-fwts-stable
 	fi
-	sudo apt -y install acpica-tools fwts
+	apt -y install acpica-tools fwts
 fi
 
 # create a topmost folder by date
@@ -37,11 +40,11 @@ fi
 [ -d $DATE ] || mkdir $DATE
 cd $DATE
 
-VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
+VENDOR=$(dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
 [ -d $VENDOR ] || mkdir $VENDOR
 cd $VENDOR
 
-PRODUCT=$(sudo dmidecode --string system-product-name | awk -F ' ' '{ printf $1; }')
+PRODUCT=$(dmidecode --string system-product-name | awk -F ' ' '{ printf $1; }')
 if [ -d $PRODUCT ] ; then
 	echo "$PRODUCT exists! Exiting..."
 	exit 1
@@ -52,19 +55,19 @@ cd $PRODUCT
 echo ""
 echo "collecting logs..."
 
-sudo dmesg > dmesg.log
-sudo acpidump > acpi.log
-sudo dmidecode > dmi.log
-sudo lspci -vvnn > lspci_vvnn.log
-sudo lspci -xxx > lspci_xxx.log
+dmesg > dmesg.log
+acpidump > acpi.log
+dmidecode > dmi.log
+lspci -vvnn > lspci_vvnn.log
+lspci -xxx > lspci_xxx.log
 
 echo ""
 echo "running fwts tests..."
 
-VENDOR=$(sudo dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
+VENDOR=$(dmidecode --string bios-vendor | awk -F ' ' '{ printf $1; }')
 for i in "${IFV_LIST[@]}"
 do
         [ "$VENDOR" = "$i" ] && RECOMMEND_TESTS="$RECOMMEND_TESTS_IFV"
 done
 
-sudo fwts $RECOMMEND_TESTS
+fwts $RECOMMEND_TESTS
